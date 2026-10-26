@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f1f5f0;
+  --surface: #ffffff;
+  --fg: #13241b;
+  --muted: #56675d;
+  --line: #d3ddd3;
+  --accent: #1b6b49;
+  --accent-fg: #ffffff;
+  --accent-soft: #dcebe1;
+  --gold: #8f5a00;
+  --veg: #1e8e3e;
+  --nonveg: #b3261e;
+  --danger: #b3261e;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0e1713;
+    --surface: #16231c;
+    --fg: #e8f0ea;
+    --muted: #9db0a4;
+    --line: #2a3c31;
+    --accent: #4cc38a;
+    --accent-fg: #07140d;
+    --accent-soft: #1b3328;
+    --gold: #e3b341;
+    --veg: #49c66b;
+    --nonveg: #f0756b;
+    --danger: #f0756b;
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-bg font-body text-base text-fg antialiased;
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-line bg-surface px-3.5 py-2 text-sm font-semibold text-fg disabled:cursor-default disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply border-accent bg-accent text-accent-fg;
+  }
+  .btn-danger {
+    @apply border-danger text-danger;
+  }
+  .input {
+    @apply w-full rounded-md border border-line bg-surface px-3 py-2.5 text-base text-fg placeholder:text-muted;
+  }
+  .label {
+    @apply mb-1 block text-xs font-semibold text-muted;
+  }
+  .chip {
+    @apply inline-flex flex-none items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-2 text-sm font-semibold;
+  }
+  .badge {
+    @apply rounded-full border border-line px-2 py-px text-xs font-semibold text-muted;
+  }
+  .switch {
+    @apply relative h-[26px] w-11 flex-none cursor-pointer appearance-none rounded-full bg-line transition-colors checked:bg-accent;
+  }
+  .switch::after {
+    content: '';
+    @apply absolute left-[3px] top-[3px] h-5 w-5 rounded-full bg-surface transition-transform;
+  }
+  .switch:checked::after {
+    @apply translate-x-[18px];
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch,
+  .switch::after {
+    transition: none;
+  }
+}

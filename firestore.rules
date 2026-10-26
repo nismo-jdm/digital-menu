@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // An admin is a signed-in user whose UID has a document in /admins.
+    // Those documents can only be created in the Firebase console, never from the app.
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function validItem() {
+      let d = request.resource.data;
+      return d.name is string && d.name.size() > 0 && d.name.size() <= 120
+        && d.price is number && d.price >= 0
+        && d.categoryId is string
+        && d.veg is bool;
+    }
+
+    function validCategory() {
+      let d = request.resource.data;
+      return d.name is string && d.name.size() > 0 && d.name.size() <= 60;
+    }
+
+    // Customers can read the menu. Only admins can change it.
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /categories/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validCategory();
+      allow delete: if isAdmin();
+    }
+
+    match /items/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validItem();
+      allow delete: if isAdmin();
+    }
+
+    // A user can check whether they are an admin. Nobody can write here from the app.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}
